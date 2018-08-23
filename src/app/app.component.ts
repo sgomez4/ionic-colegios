@@ -6,6 +6,7 @@ import { Config, Nav, Platform } from 'ionic-angular';
 
 import { FirstRunPage } from '../pages';
 import { Settings } from '../providers';
+import { LoginServiceProvider } from '../providers/login-service/login-service';
 
 @Component({
   template: `<ion-menu [content]="content">
@@ -45,12 +46,20 @@ export class MyApp {
     { title: 'Search', component: 'SearchPage' }
   ]
 
-  constructor(private translate: TranslateService, platform: Platform, settings: Settings, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
-    platform.ready().then(() => {
+  constructor(private translate: TranslateService,
+     platform: Platform,
+     settings: Settings, private config: Config, 
+     private statusBar: StatusBar, private splashScreen: SplashScreen,
+   
+   public LoginService: LoginServiceProvider) {
+   platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      if(this.LoginService.IsAuthenticated()){
+        this.nav.setRoot('ContentPage');
+      }
     });
     this.initTranslate();
   }
@@ -87,3 +96,4 @@ export class MyApp {
     this.nav.setRoot(page.component);
   }
 }
+

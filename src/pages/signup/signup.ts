@@ -5,6 +5,8 @@ import { IonicPage, NavController, ToastController } from 'ionic-angular';
 import { User } from '../../providers';
 import { MainPage } from '../';
 import {Api} from '../../providers/api/api';
+import { Usuario } from '../../shared/user';
+import { LoginServiceProvider } from '../../providers/login-service/login-service';
 
 @IonicPage()
 @Component({
@@ -15,12 +17,15 @@ export class SignupPage {
   // The account fields for the login form.
   // If you're using the username field with or without email, make
   // sure to add it to the type
-  account: { username: string, email: string, password: string,nombre:string,apellido:string } = {
-    username: '',
-    email: '',
-    password: '',
-    nombre:"",
-    apellido:""
+  account:Usuario = {
+  
+    username: "",
+    password: "",
+    primernombre: "",
+    segundonombre:  "",
+    correo:"",
+    usuario:""
+    
   };
 
   // Our translated text strings
@@ -30,7 +35,7 @@ export class SignupPage {
     public user: User,
     public toastCtrl: ToastController,
     public translateService: TranslateService, 
-    public ApiService: Api )
+    public loginService:LoginServiceProvider)
    
     {
 
@@ -40,23 +45,18 @@ export class SignupPage {
   }
 
   doSignup() {
-    this.ApiService.post('users/signup',this.account).subscribe(
+    this.loginService.register(this.account).subscribe(
       (registro) => {
 
         let datoUsuario = {
           username: this.account.username,
           password: this.account.password
         }
-        this.ApiService.post('users/login',datoUsuario).subscribe(
-
-          (usuario) => {
-            console.log(usuario);
-          },
-
-          (error) => { })
+        this.loginService.login(datoUsuario);
       },
       (err) => { }
     )
 
   }
+
 }

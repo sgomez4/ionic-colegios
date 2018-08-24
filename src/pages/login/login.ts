@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { IonicPage, NavController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, ToastController, Events } from 'ionic-angular';
 
+import { User } from '../../providers';
 import { MainPage } from '../';
 import { LoginServiceProvider } from '../../providers/login-service/login-service';
-
 import { Usuario } from '../../shared/user';
 
 @IonicPage()
@@ -17,32 +17,36 @@ export class LoginPage {
   // If you're using the username field with or without email, make
   // sure to add it to the type
   account:Usuario = { 
-    username: "",
-    password: "",
-    primernombre: "",
-    segundonombre:  "",
-    correo:"",
-    usuario:""
-  }
-
+    username: '',
+    password: '',
+    nombre: '',
+    primerapellido: '',
+    segundoapellido: '',
+    correo: '',
+    telcontacto: ''
+  };
   // Our translated text strings
   private loginErrorString: string;
 
   constructor(public navCtrl: NavController,
+    public user: User,
     public toastCtrl: ToastController,
-    public translateService : TranslateService, 
-    public loginservice:LoginServiceProvider) {
-
+    public translateService: TranslateService,
+    public LoginService:LoginServiceProvider,
+    public events:Events
+  ) {
+     this. events.subscribe('user:created',(user,time) =>{
+        console.log(user);
+        this.navCtrl.push(MainPage);
+      });
     this.translateService.get('LOGIN_ERROR').subscribe((value) => {
       this.loginErrorString = value;
     })
   }
 
   // Attempt to login in through our User service
-  doLogin() {
-this.loginservice.login(this.account);
-
-    /* this.user.login(this.account).subscribe((resp) => {
+  /*doLogin() {
+    this.user.login(this.account).subscribe((resp) => {
       this.navCtrl.push(MainPage);
     }, (err) => {
       this.navCtrl.push(MainPage);
@@ -53,6 +57,12 @@ this.loginservice.login(this.account);
         position: 'top'
       });
       toast.present();
-    }); */
+    });
+  }*/
+  doLogin(){
+    this.LoginService.login(this.account);
+
+  
+
   }
 }

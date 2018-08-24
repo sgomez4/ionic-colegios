@@ -1,11 +1,7 @@
-
+copiar en el archivo autogenerado login-service.ts lo siguiente
+```ts
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { baseUrl } from '../../shared/config';
-import { Observable } from 'rxjs/Observable';
-import { Usuario } from '../../shared/user';
-import { ToastController, Events } from 'ionic-angular';
-
 interface AuthResponse {
   status: string,
   success: string,
@@ -18,8 +14,6 @@ interface JWTResponse {
   user: any
 };
 
-
-
 @Injectable()
 export class LoginServiceProvider {
 
@@ -27,28 +21,9 @@ export class LoginServiceProvider {
   isAuthenticated: boolean = false;
   username: string;
   authToken: string = undefined;
-  constructor(
-    public http: HttpClient,
-    private toastCtrl: ToastController,
-    public event:Events
-  ) {
+  constructor(public http: HttpClient) {
     console.log('Hello LoginServiceProvider Provider');
     this.loadUserCredentials();
-  }
-
-  presentToast(myMessage:string) {
-    let toast = this.toastCtrl.create({
-      message: myMessage,
-      showCloseButton: true,
-      closeButtonText: 'ok',
-      position: 'top'
-    });
-  
-    toast.onDidDismiss(() => {
-      console.log('Dismissed toast');
-    });
-  
-    toast.present();
   }
 
   private loadUserCredentials() {
@@ -57,7 +32,7 @@ export class LoginServiceProvider {
       
     }); */
     if (credentials) {
-      if (credentials.token != undefined) {
+      if (credentials.usuario != undefined) {
         this.isAuthenticated = true;
         //this.useCredentials(credentials);
 
@@ -83,24 +58,7 @@ export class LoginServiceProvider {
 
     this.destroyUserCredentials();
   }
-  register(userData:Usuario){
-    return this.http.post(baseUrl+'users/signup',userData);
-  }
-  login(userData){
-    this.http.post<AuthResponse>(baseUrl+'users/login',userData).subscribe(
-      (usuario) => {
-        let newCredentials={
-          username:userData.username,
-          token:usuario.token
-        }
-        this.event.publish('user:created',newCredentials,Date.now());
-        console.log(usuario);
-        this.presentToast('Bienvenido: '+userData.username)
-        this.storeUserCredentials(newCredentials);
-      },
-      (error) => { this.presentToast('Login incorrecto'); }
-    );
-  }
+
   IsAuthenticated(): boolean {
     return this.isAuthenticated;
   }
@@ -112,3 +70,5 @@ export class LoginServiceProvider {
     this.destroyUserCredentials();
   };
 }
+
+```
